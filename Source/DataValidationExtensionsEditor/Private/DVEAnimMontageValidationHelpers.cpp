@@ -1,6 +1,6 @@
 #include "DVEAnimMontageValidationHelpers.h"
 
-#include "DVEMacros.h"
+#include "DVEDataValidator.h"
 
 #include <Animation/AnimMontage.h>
 
@@ -21,7 +21,8 @@ namespace
 
 void FDVEAnimMontageValidationHelpers::CheckMontageSlots( TArray< FText > & validation_errors, const UAnimMontage * montage, const TArray< FName > & slots )
 {
-    DATA_VALIDATION_CONTAINER_HAS_SIZE_AUTO_MESSAGE( montage->SlotAnimTracks, slots.Num() )
+    FDVEDataValidator( validation_errors )
+        .HasNumItems( TEXT( "SlotAnimTracks" ), montage->SlotAnimTracks, slots.Num() );
 
     for ( const auto & slot : montage->SlotAnimTracks )
     {
@@ -35,7 +36,10 @@ void FDVEAnimMontageValidationHelpers::CheckMontageSlots( TArray< FText > & vali
 bool FDVEAnimMontageValidationHelpers::CheckMontageSectionCount( TArray< FText > & validation_errors, const UAnimMontage * montage, const int section_count )
 {
     const auto previous_errors_count = validation_errors.Num();
-    DATA_VALIDATION_ARE_EQUAL( montage->CompositeSections.Num(), section_count, FText::FromString( FString::Printf( TEXT( "The animation montage must have exactly %i sections" ), section_count ) ) );
+
+    FDVEDataValidator( validation_errors )
+        .AreEqual( montage->CompositeSections.Num(), section_count, FText::FromString( FString::Printf( TEXT( "The animation montage must have exactly %i sections" ), section_count ) ) );
+
     return previous_errors_count == validation_errors.Num();
 }
 
