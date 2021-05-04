@@ -12,20 +12,7 @@ namespace UnrealBuildTool.Rules
                 new string[] { 
                     "Core",
                     "CoreUObject",
-                    "Engine",
-                    "TargetPlatform",
-                    "AssetRegistry"
-                }
-            );
-
-            PrivateDependencyModuleNames.AddRange(
-                new string[] {
-                    "Slate",
-                    "SlateCore",
-                    "UnrealEd",
-                    "AssetRegistry",
-                    "EditorStyle",
-                    "Blutility"
+                    "Engine"
                 }
             );
         }
