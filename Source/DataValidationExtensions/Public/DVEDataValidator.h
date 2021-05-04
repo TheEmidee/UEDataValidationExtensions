@@ -119,7 +119,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     template < typename _TYPE_ >
     FDVEDataValidator & NotNull( const FName property_name, const _TYPE_ value )
     {
-        if ( value == nullptr )
+        if ( IsValueNull( value ) )
         {
             ValidationErrors.Emplace(
                 FText::FromString(
@@ -134,7 +134,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         for ( const auto & item : container )
         {
-            if ( item == nullptr )
+            if ( IsValueNull( item ) )
             {
                 ValidationErrors.Emplace(
                     FText::FromString(
@@ -197,27 +197,39 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
 
 private:
     template < typename _VALUE_TYPE_, typename TEnableIf< TIsEnum< _VALUE_TYPE_ >::Value, int >::Type = 0 >
-    static FString GetValueToString( const _VALUE_TYPE_ value )
+    static FString GetValueToString( _VALUE_TYPE_ value )
     {
         return StaticEnum< _VALUE_TYPE_ >()->GetValueAsString( value );
     }
 
     template < typename _VALUE_TYPE_, typename TEnableIf< TIsFloatingPoint< _VALUE_TYPE_ >::Value, int >::Type = 0 >
-    static FString GetValueToString( const _VALUE_TYPE_ value )
+    static FString GetValueToString( _VALUE_TYPE_ value )
     {
         return FString::SanitizeFloat( value, 2 );
     }
 
     template < typename _VALUE_TYPE_, typename TEnableIf< TIsIntegral< _VALUE_TYPE_ >::Value && TIsSame< bool, _VALUE_TYPE_ >::Value, int >::Type = 0 >
-    static FString GetValueToString( const _VALUE_TYPE_ value )
+    static FString GetValueToString( _VALUE_TYPE_ value )
     {
         return value ? TEXT( "true" ) : TEXT( "false" );
     }
 
     template < typename _VALUE_TYPE_, typename TEnableIf< TIsIntegral< _VALUE_TYPE_ >::Value, int >::Type = 0 >
-    static FString GetValueToString( const _VALUE_TYPE_ value )
+    static FString GetValueToString( _VALUE_TYPE_ value )
     {
         return FString::FromInt( value );
+    }
+
+    template < typename _VALUE_TYPE_, typename TEnableIf< TIsPointer< _VALUE_TYPE_ >::Value, int >::Type = 0 >
+    static bool IsValueNull( _VALUE_TYPE_ value )
+    {
+        return value == nullptr;
+    }
+
+    template < typename _VALUE_TYPE_, typename TEnableIf< TIsWeakPointerType< _VALUE_TYPE_ >::Value, int >::Type = 0 >
+    static bool IsValueNull( _VALUE_TYPE_ value )
+    {
+        return value.IsNull();
     }
 
     TArray< FText > & ValidationErrors;
