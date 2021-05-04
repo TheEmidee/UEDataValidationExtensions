@@ -1,0 +1,30 @@
+{
+  "FileVersion": 3,
+  "Version": 1.1,
+  "VersionName": "1.1",
+  "EngineVersion": "4.26.0",
+  "FriendlyName": "Data Validation Extensions",
+  "Description" : "Helper classes",
+  "Category" : "Validation",
+  "CreatedBy" : "Michael Delva",
+  "CreatedByURL" : "http://www.emidee.net",
+  "DocsURL" : "",
+  "MarketplaceURL" : "",
+  "SupportURL" : "",
+  "EnabledByDefault" : false,
+  "CanContainContent" : true,
+  "IsBetaVersion" : false,
+  "Installed" : false,
+  "Modules": [
+    {
+      "Name": "DataValidationExtensions",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    },
+    {
+      "Name": "DataValidationExtensionsEditor",
+      "Type": "Editor",
+      "LoadingPhase": "Default"
+    }
+  ]
+}
