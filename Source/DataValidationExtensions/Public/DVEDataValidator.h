@@ -232,5 +232,11 @@ private:
         return value.IsNull();
     }
 
+    template < typename _VALUE_TYPE_ >
+    static bool IsValueNull( TSubclassOf< _VALUE_TYPE_ > value )
+    {
+        return value == nullptr;
+    }
+
     TArray< FText > & ValidationErrors;
 };
