@@ -104,6 +104,19 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         return *this;
     }
 
+    template < typename _TYPE_ >
+    FDVEDataValidator & IsValid( const FName property_name, const _TYPE_ value )
+    {
+        if ( !value.IsValid() )
+        {
+            ValidationErrors.Emplace(
+                FText::FromString(
+                    FString::Printf( TEXT( "%s must be valid" ),
+                        *property_name.ToString() ) ) );
+        }
+        return *this;
+    }
+
     FDVEDataValidator & NotNone( const FName property_name, const FName value )
     {
         if ( value == NAME_None )
@@ -187,6 +200,13 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
                         *expected_tags.ToString() ) ) );
         }
 
+        return *this;
+    }
+
+    template < typename _TYPE_ >
+    FDVEDataValidator & CustomValidation( _TYPE_ value, TFunctionRef< void ( TArray< FText > &, _TYPE_ ) > custom_validator )
+    {
+        custom_validator( ValidationErrors, value );
         return *this;
     }
 
