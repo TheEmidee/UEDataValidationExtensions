@@ -47,6 +47,14 @@ UDVEEditorValidatorTexturesBase::UDVEEditorValidatorTexturesBase()
             // -5 so it runs after everything else. This allows to refine the texture group of a normal map texture after it has been set to a non-normal map texture group by another applicator
             -5,
             false } );
+
+    RegisterTextureSettingsApplicator(
+        { []( const FString & /*path*/, const FString & name ) {
+             return name.StartsWith( "RT_" );
+         },
+            []( FTextureSettings & texture_settings ) {
+                texture_settings.RequiredTextureGroup = TextureGroup::TEXTUREGROUP_RenderTarget;
+            } } );
 }
 
 bool UDVEEditorValidatorTexturesBase::CanValidateAsset_Implementation( UObject * in_asset ) const
