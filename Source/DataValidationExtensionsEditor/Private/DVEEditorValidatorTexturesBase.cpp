@@ -8,7 +8,7 @@ UDVEEditorValidatorTexturesBase::UDVEEditorValidatorTexturesBase()
 
     RegisterTextureSettingsApplicator(
         { []( const FString & path, const FString & /* name */ ) {
-            return path.Contains( TEXT( "/UI/" ) );
+             return path.Contains( TEXT( "/UI/" ) );
          },
             []( FTextureSettings & texture_settings ) {
                 texture_settings.RequiredTextureGroup = TextureGroup::TEXTUREGROUP_UI;
@@ -20,7 +20,7 @@ UDVEEditorValidatorTexturesBase::UDVEEditorValidatorTexturesBase()
 
     RegisterTextureSettingsApplicator(
         { []( const FString & /*path*/, const FString & name ) {
-            return name.EndsWith( TEXT( "_N" ) );
+             return name.EndsWith( TEXT( "_N" ) );
          },
             []( FTextureSettings & texture_settings ) {
                 switch ( texture_settings.RequiredTextureGroup )
@@ -59,6 +59,10 @@ UDVEEditorValidatorTexturesBase::UDVEEditorValidatorTexturesBase()
 
 bool UDVEEditorValidatorTexturesBase::CanValidateAsset_Implementation( UObject * in_asset ) const
 {
+    if ( !Super::CanValidateAsset_Implementation( in_asset ) )
+    {
+        return false;
+    }
     return in_asset->GetClass()->IsChildOf( UTexture::StaticClass() );
 }
 
@@ -136,7 +140,7 @@ EDataValidationResult UDVEEditorValidatorTexturesBase::ValidateLoadedAsset_Imple
     {
         case TextureCompressionSettings::TC_Masks:
         {
-            texture_settings.SetCheckSRGB( ECheckFlag::CheckItIsOff );        
+            texture_settings.SetCheckSRGB( ECheckFlag::CheckItIsOff );
         }
         break;
         case TextureCompressionSettings::TC_Grayscale:
@@ -148,25 +152,30 @@ EDataValidationResult UDVEEditorValidatorTexturesBase::ValidateLoadedAsset_Imple
             break;
     }
 
-    const auto check_power_of_two = [ &validation_errors, texture ]( const int32 dimension, const FString & dimension_str ) {
-        if ( !FMath::IsPowerOfTwo( dimension ) && texture->PowerOfTwoMode == ETexturePowerOfTwoSetting::None )
-        {
-            validation_errors.Emplace(
-                FText::FromString(
-                    FString::Printf(
-                        TEXT( "%s must a power of two %s. Current : %i. You can also change PowerOfTwoMode." ),
-                        *GetNameSafe( texture ),
-                        *dimension_str,
-                        dimension ) ) );
-        }
-    };
+    const auto skip_power_of_two_check = name_parts.Contains( "NotPow2" );
+
+    if ( !skip_power_of_two_check )
+    {
+        const auto check_power_of_two = [ &validation_errors, texture ]( const int32 dimension, const FString & dimension_str ) {
+            if ( !FMath::IsPowerOfTwo( dimension ) && texture->PowerOfTwoMode == ETexturePowerOfTwoSetting::None )
+            {
+                validation_errors.Emplace(
+                    FText::FromString(
+                        FString::Printf(
+                            TEXT( "%s must a power of two %s. Current : %i. You can also change PowerOfTwoMode." ),
+                            *GetNameSafe( texture ),
+                            *dimension_str,
+                            dimension ) ) );
+            }
+        };
 
 #define CHECK_POWER_OF_TWO( dimension ) check_power_of_two( dimension, TEXT( #dimension ) );
 
-    CHECK_POWER_OF_TWO( width );
-    CHECK_POWER_OF_TWO( height );
+        CHECK_POWER_OF_TWO( width );
+        CHECK_POWER_OF_TWO( height );
 
 #undef CHECK_POWER_OF_TWO
+    }
 
     if ( texture->LODGroup != texture_settings.RequiredTextureGroup )
     {
