@@ -210,6 +210,21 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         return *this;
     }
 
+    template < typename _PARENT_TYPE_, typename _VALUE_TYPE_ >
+    FDVEDataValidator & IsSubclassChildOf( const FName property_name, const TSubclassOf< _VALUE_TYPE_ > & value )
+    {
+        if ( !value->template IsChildOf< _PARENT_TYPE_ >() )
+        {
+            ValidationErrors.Emplace(
+                FText::FromString(
+                    FString::Printf( TEXT( "%s must have be a child of %s" ),
+                        *property_name.ToString(),
+                        *GetNameSafe( _PARENT_TYPE_::StaticClass() ) ) ) );
+        }
+
+        return *this;
+    }
+
     EDataValidationResult Result() const
     {
         return ValidationErrors.Num() > 0 ? EDataValidationResult::Invalid : EDataValidationResult::Valid;
