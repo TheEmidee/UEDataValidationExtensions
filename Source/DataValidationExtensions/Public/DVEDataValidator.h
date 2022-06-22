@@ -160,6 +160,19 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     }
 
     template < typename _CONTAINER_TYPE_ >
+    FDVEDataValidator & NotEmpty( const FName property_name, const _CONTAINER_TYPE_ & container )
+    {
+        if ( container.Num() == 0 )
+        {
+            ValidationErrors.Emplace(
+                FText::FromString(
+                    FString::Printf( TEXT( "%s must not be empty" ),
+                        *property_name.ToString() ) ) );
+        }
+        return *this;
+    }
+
+    template < typename _CONTAINER_TYPE_ >
     FDVEDataValidator & HasNumItems( const FName property_name, const _CONTAINER_TYPE_ & container, int expected_value )
     {
         if ( container.Num() != expected_value )
@@ -204,7 +217,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     }
 
     template < typename _TYPE_ >
-    FDVEDataValidator & CustomValidation( _TYPE_ value, TFunctionRef< void ( TArray< FText > &, _TYPE_ ) > custom_validator )
+    FDVEDataValidator & CustomValidation( _TYPE_ value, TFunctionRef< void( TArray< FText > &, _TYPE_ ) > custom_validator )
     {
         custom_validator( ValidationErrors, value );
         return *this;
