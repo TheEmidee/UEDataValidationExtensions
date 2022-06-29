@@ -216,6 +216,48 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         return *this;
     }
 
+    template < typename _KEY_TYPE_, typename _VALUE_TYPE_ >
+    FDVEDataValidator & MapHasNoNullKey( const FName property_name, const TMap< _KEY_TYPE_, _VALUE_TYPE_ > & map )
+    {
+        TArray< _KEY_TYPE_ > keys;
+        map.GenerateKeyArray( keys );
+
+        for ( const auto * key : keys )
+        {
+            if ( IsValueNull( key ) )
+            {
+                ValidationErrors.Emplace(
+                    FText::FromString(
+                        FString::Printf( TEXT( "%s must not contain a null key" ),
+                            *property_name.ToString() ) ) );
+                break;
+            }
+        }
+
+        return *this;
+    }
+
+    template < typename _KEY_TYPE_, typename _VALUE_TYPE_ >
+    FDVEDataValidator & MapHasNoNullValue( const FName property_name, const TMap< _KEY_TYPE_, _VALUE_TYPE_ > & map )
+    {
+        TArray< _VALUE_TYPE_ > values;
+        map.GenerateValueArray( values );
+
+        for ( const auto * value : values )
+        {
+            if ( IsValueNull( value ) )
+            {
+                ValidationErrors.Emplace(
+                    FText::FromString(
+                        FString::Printf( TEXT( "%s must not contain a null value" ),
+                            *property_name.ToString() ) ) );
+                break;
+            }
+        }
+
+        return *this;
+    }
+
     template < typename _TYPE_ >
     FDVEDataValidator & CustomValidation( _TYPE_ value, TFunctionRef< void( TArray< FText > &, _TYPE_ ) > custom_validator )
     {
