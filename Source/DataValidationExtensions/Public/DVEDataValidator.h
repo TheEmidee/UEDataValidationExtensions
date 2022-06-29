@@ -224,7 +224,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
 
         for ( const auto * key : keys )
         {
-            if ( key == nullptr )
+            if ( IsValueNull( key ) )
             {
                 ValidationErrors.Emplace(
                     FText::FromString(
@@ -245,7 +245,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
 
         for ( const auto * value : values )
         {
-            if ( value == nullptr )
+            if ( IsValueNull( value ) )
             {
                 ValidationErrors.Emplace(
                     FText::FromString(
