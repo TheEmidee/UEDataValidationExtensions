@@ -1,8 +1,8 @@
 #pragma once
 
 #include <CoreMinimal.h>
-
 #include <EditorValidatorBase.h>
+#include <Engine/EngineTypes.h>
 
 #include "DVEEditorValidatorBase.generated.h"
 
@@ -12,13 +12,11 @@ class DATAVALIDATIONEXTENSIONSEDITOR_API UDVEEditorValidatorBase : public UEdito
     GENERATED_BODY()
 
 public:
-
     UDVEEditorValidatorBase();
 
     bool CanValidateAsset_Implementation( UObject * asset ) const override;
 
 protected:
-
     EDataValidationResult GetResult( UObject * in_asset, TArray< FText > & validation_errors );
 
     /* None of those directories will be validated */
