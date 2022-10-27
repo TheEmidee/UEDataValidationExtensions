@@ -280,6 +280,12 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         return *this;
     }
 
+    FDVEDataValidator & CombineWith( UObject * other_object )
+    {
+        other_object->IsDataValid( ValidationErrors );
+        return *this;
+    }
+
     EDataValidationResult Result() const
     {
         return ValidationErrors.Num() > 0 ? EDataValidationResult::Invalid : EDataValidationResult::Valid;
