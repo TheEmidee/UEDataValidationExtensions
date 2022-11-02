@@ -1,12 +1,19 @@
 #pragma once
 
 #include <CoreMinimal.h>
+#include <Templates/SubclassOf.h>
+#include <UObject/ObjectPtr.h>
+
+#if WITH_EDITOR
 
 #define VALIDATOR_GET_PROPERTY( PropertyName ) #PropertyName, PropertyName
 
 struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
 {
-    explicit FDVEDataValidator( TArray< FText > & validation_errors );
+    explicit FDVEDataValidator( TArray< FText > & validation_errors ) :
+        ValidationErrors( validation_errors )
+    {
+    }
 
     template < typename _TYPE_ >
     FDVEDataValidator & AreEqual( const FName first_property_name, const _TYPE_ first_value, const FName second_property_name, const _TYPE_ second_value )
@@ -342,3 +349,5 @@ private:
 
     TArray< FText > & ValidationErrors;
 };
+
+#endif
