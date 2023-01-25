@@ -344,7 +344,7 @@ private:
     template < typename _VALUE_TYPE_ >
     static bool IsValueNull( TObjectPtr< _VALUE_TYPE_ > value )
     {
-        return value.IsNull();
+        return value == nullptr;
     }
 
     TArray< FText > & ValidationErrors;
