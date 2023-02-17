@@ -275,7 +275,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     template < typename _PARENT_TYPE_, typename _VALUE_TYPE_ >
     FDVEDataValidator & IsSubclassChildOf( const FName property_name, const TSubclassOf< _VALUE_TYPE_ > & value )
     {
-        if ( !value->template IsChildOf< _PARENT_TYPE_ >() )
+        if ( value == nullptr || !value->template IsChildOf< _PARENT_TYPE_ >() )
         {
             ValidationErrors.Emplace(
                 FText::FromString(
