@@ -15,6 +15,30 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
     }
 
+    FDVEDataValidator & IsFalse( const FName property_name, const bool value )
+    {
+        if ( value )
+        {
+            ValidationErrors.Emplace(
+                FText::FromString(
+                    FString::Printf( TEXT( "%s must be false" ),
+                        *property_name.ToString() ) ) );
+        }
+        return *this;
+    }
+
+    FDVEDataValidator & IsTrue( const FName property_name, const bool value )
+    {
+        if ( !value )
+        {
+            ValidationErrors.Emplace(
+                FText::FromString(
+                    FString::Printf( TEXT( "%s must be false" ),
+                        *property_name.ToString() ) ) );
+        }
+        return *this;
+    }
+
     template < typename _TYPE_ >
     FDVEDataValidator & AreEqual( const FName first_property_name, const _TYPE_ first_value, const FName second_property_name, const _TYPE_ second_value )
     {
