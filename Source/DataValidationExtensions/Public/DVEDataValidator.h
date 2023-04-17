@@ -160,6 +160,23 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         return *this;
     }
 
+    template < typename _CONTAINER_TYPE_ >
+    FDVEDataValidator & NoNoneItem( const FName property_name, const _CONTAINER_TYPE_ & container )
+    {
+        for ( const auto & item : container )
+        {
+            if ( item == NAME_None )
+            {
+                ValidationErrors.Emplace(
+                    FText::FromString(
+                        FString::Printf( TEXT( "%s must not contain a none item" ),
+                            *property_name.ToString() ) ) );
+                break;
+            }
+        }
+        return *this;
+    }
+
     template < typename _TYPE_ >
     FDVEDataValidator & NotNull( const FName property_name, const _TYPE_ value )
     {
