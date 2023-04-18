@@ -160,6 +160,23 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         return *this;
     }
 
+    template < typename _CONTAINER_TYPE_ >
+    FDVEDataValidator & NoNoneItem( const FName property_name, const _CONTAINER_TYPE_ & container )
+    {
+        for ( const auto & item : container )
+        {
+            if ( item == NAME_None )
+            {
+                ValidationErrors.Emplace(
+                    FText::FromString(
+                        FString::Printf( TEXT( "%s must not contain a none item" ),
+                            *property_name.ToString() ) ) );
+                break;
+            }
+        }
+        return *this;
+    }
+
     template < typename _TYPE_ >
     FDVEDataValidator & NotNull( const FName property_name, const _TYPE_ value )
     {
@@ -199,6 +216,23 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
                 FText::FromString(
                     FString::Printf( TEXT( "%s must not be empty" ),
                         *property_name.ToString() ) ) );
+        }
+        return *this;
+    }
+
+    template < typename _CONTAINER_TYPE_ >
+    FDVEDataValidator & NoEmptyItem( const FName property_name, const _CONTAINER_TYPE_ & container )
+    {
+        for ( const auto & item : container )
+        {
+            if ( item.IsEmpty() )
+            {
+                ValidationErrors.Emplace(
+                    FText::FromString(
+                        FString::Printf( TEXT( "%s must not contain an empty item" ),
+                            *property_name.ToString() ) ) );
+                break;
+            }
         }
         return *this;
     }
