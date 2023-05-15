@@ -2,6 +2,7 @@
 
 #include <AssetRegistry/AssetRegistryModule.h>
 #include <EditorUtilityBlueprint.h>
+#include <EditorValidatorBase.h>
 #include <EditorValidatorSubsystem.h>
 
 // All this does in addition to the behavior of the parent commandlet, is to register the BP validators
