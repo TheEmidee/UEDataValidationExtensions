@@ -1,6 +1,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
+#include <Misc/DataValidation.h>
 #include <Templates/SubclassOf.h>
 #include <UObject/ObjectPtr.h>
 
@@ -10,8 +11,8 @@
 
 struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
 {
-    explicit FDVEDataValidator( TArray< FText > & validation_errors ) :
-        ValidationErrors( validation_errors )
+    explicit FDVEDataValidator( FDataValidationContext & context ) :
+        Context( context )
     {
     }
 
@@ -19,7 +20,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( value )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must be false" ),
                         *property_name.ToString() ) ) );
@@ -31,7 +32,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( !value )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must be false" ),
                         *property_name.ToString() ) ) );
@@ -44,7 +45,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( first_value != second_value )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must be equal to %s. Current value : %s. Expected value : %s" ),
                         *first_property_name.ToString(),
@@ -60,7 +61,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( first_value != second_value )
         {
-            ValidationErrors.Emplace( MoveTemp( error_message ) );
+            Context.AddError( MoveTemp( error_message ) );
         }
         return *this;
     }
@@ -70,7 +71,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( property_value != expected_value )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must be equal to %s. Current value : %s" ),
                         *property_name.ToString(),
@@ -85,7 +86,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( first_value == second_value )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must not be equal to %s. Current value : %s. Expected value : %s )" ),
                         *first_property_name.ToString(),
@@ -101,7 +102,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( first_value == second_value )
         {
-            ValidationErrors.Emplace( MoveTemp( error_message ) );
+            Context.AddError( MoveTemp( error_message ) );
         }
         return *this;
     }
@@ -111,7 +112,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( property_value == not_expected_value )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must not be equal to %s" ),
                         *property_name.ToString(),
@@ -125,7 +126,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( value <= threshold )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must be greater than %s. Current value : %s" ),
                         *property_name.ToString(),
@@ -140,7 +141,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( !value.IsValid() )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must be valid" ),
                         *property_name.ToString() ) ) );
@@ -152,7 +153,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( value == NAME_None )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must not be None" ),
                         *property_name.ToString() ) ) );
@@ -167,7 +168,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         {
             if ( item == NAME_None )
             {
-                ValidationErrors.Emplace(
+                Context.AddError(
                     FText::FromString(
                         FString::Printf( TEXT( "%s must not contain a none item" ),
                             *property_name.ToString() ) ) );
@@ -182,7 +183,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( IsValueNull( value ) )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must not be null" ),
                         *property_name.ToString() ) ) );
@@ -197,7 +198,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         {
             if ( IsValueNull( item ) )
             {
-                ValidationErrors.Emplace(
+                Context.AddError(
                     FText::FromString(
                         FString::Printf( TEXT( "%s must not contain a null item" ),
                             *property_name.ToString() ) ) );
@@ -212,7 +213,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( container.Num() == 0 )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must not be empty" ),
                         *property_name.ToString() ) ) );
@@ -227,7 +228,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         {
             if ( item.IsEmpty() )
             {
-                ValidationErrors.Emplace(
+                Context.AddError(
                     FText::FromString(
                         FString::Printf( TEXT( "%s must not contain an empty item" ),
                             *property_name.ToString() ) ) );
@@ -242,7 +243,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( container.Num() != expected_value )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must have %i items" ),
                         *property_name.ToString(),
@@ -256,7 +257,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( !tag_container.HasTag( expected_tag ) )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must have the tag %s" ),
                         *property_name.ToString(),
@@ -271,7 +272,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( !tag_container.HasAll( expected_tags ) )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must have all the tags %s" ),
                         *property_name.ToString(),
@@ -291,7 +292,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         {
             if ( IsValueNull( key ) )
             {
-                ValidationErrors.Emplace(
+                Context.AddError(
                     FText::FromString(
                         FString::Printf( TEXT( "%s must not contain a null key" ),
                             *property_name.ToString() ) ) );
@@ -312,7 +313,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         {
             if ( IsValueNull( value ) )
             {
-                ValidationErrors.Emplace(
+                Context.AddError(
                     FText::FromString(
                         FString::Printf( TEXT( "%s must not contain a null value" ),
                             *property_name.ToString() ) ) );
@@ -324,9 +325,9 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     }
 
     template < typename _TYPE_ >
-    FDVEDataValidator & CustomValidation( _TYPE_ value, TFunctionRef< void( TArray< FText > &, _TYPE_ ) > custom_validator )
+    FDVEDataValidator & CustomValidation( _TYPE_ value, TFunctionRef< void( FDataValidationContext &, _TYPE_ ) > custom_validator )
     {
-        custom_validator( ValidationErrors, value );
+        custom_validator( Context, value );
         return *this;
     }
 
@@ -335,7 +336,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     {
         if ( value == nullptr || !value->template IsChildOf< _PARENT_TYPE_ >() )
         {
-            ValidationErrors.Emplace(
+            Context.AddError(
                 FText::FromString(
                     FString::Printf( TEXT( "%s must have be a child of %s" ),
                         *property_name.ToString(),
@@ -345,15 +346,15 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         return *this;
     }
 
-    FDVEDataValidator & CombineWith( UObject * other_object )
+    FDVEDataValidator & CombineWith( const UObject * other_object )
     {
-        other_object->IsDataValid( ValidationErrors );
+        other_object->IsDataValid( Context );
         return *this;
     }
 
     EDataValidationResult Result() const
     {
-        return ValidationErrors.Num() > 0 ? EDataValidationResult::Invalid : EDataValidationResult::Valid;
+        return Context.GetNumErrors() + Context.GetNumWarnings() > 0 ? EDataValidationResult::Invalid : EDataValidationResult::Valid;
     }
 
 private:
@@ -405,7 +406,7 @@ private:
         return value == nullptr;
     }
 
-    TArray< FText > & ValidationErrors;
+    FDataValidationContext & Context;
 };
 
 #endif
