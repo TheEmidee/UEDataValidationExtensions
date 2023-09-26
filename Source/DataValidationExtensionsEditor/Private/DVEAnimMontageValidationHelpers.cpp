@@ -19,41 +19,41 @@ namespace
     }
 }
 
-void FDVEAnimMontageValidationHelpers::CheckMontageSlots( TArray< FText > & validation_errors, const UAnimMontage * montage, const TArray< FName > & slots )
+void FDVEAnimMontageValidationHelpers::CheckMontageSlots( FDataValidationContext & context, const UAnimMontage * montage, const TArray< FName > & slots )
 {
-    FDVEDataValidator( validation_errors )
+    FDVEDataValidator( context )
         .HasNumItems( TEXT( "SlotAnimTracks" ), montage->SlotAnimTracks, slots.Num() );
 
     for ( const auto & slot : montage->SlotAnimTracks )
     {
         if ( !slots.Contains( slot.SlotName ) )
         {
-            validation_errors.Emplace( FText::FromString( FString::Printf( TEXT( "%s is not an allowed slot name. Valid slots : %s" ), *slot.SlotName.ToString(), *GetConcatenatedNameArray( slots ) ) ) );
+            context.AddError( FText::FromString( FString::Printf( TEXT( "%s is not an allowed slot name. Valid slots : %s" ), *slot.SlotName.ToString(), *GetConcatenatedNameArray( slots ) ) ) );
         }
     }
 }
 
-bool FDVEAnimMontageValidationHelpers::CheckMontageSectionCount( TArray< FText > & validation_errors, const UAnimMontage * montage, const int section_count )
+bool FDVEAnimMontageValidationHelpers::CheckMontageSectionCount( FDataValidationContext & context, const UAnimMontage * montage, const int section_count )
 {
-    const auto previous_errors_count = validation_errors.Num();
+    const auto previous_errors_count = context.GetNumErrors();
 
-    FDVEDataValidator( validation_errors )
+    FDVEDataValidator( context )
         .AreEqual( montage->CompositeSections.Num(), section_count, FText::FromString( FString::Printf( TEXT( "The animation montage must have exactly %i sections" ), section_count ) ) );
 
-    return previous_errors_count == validation_errors.Num();
+    return previous_errors_count == context.GetNumErrors();
 }
 
-void FDVEAnimMontageValidationHelpers::CheckMontageSectionCountModulo( TArray< FText > & validation_errors, const UAnimMontage * montage, const int section_count )
+void FDVEAnimMontageValidationHelpers::CheckMontageSectionCountModulo( FDataValidationContext & context, const UAnimMontage * montage, const int section_count )
 {
     const auto montage_section_count = montage->CompositeSections.Num();
 
     if ( montage_section_count % section_count != 0 )
     {
-        validation_errors.Emplace( FText::FromString( FString::Printf( TEXT( "The animation montage must have a multiple of %i sections" ), section_count ) ) );
+        context.AddError( FText::FromString( FString::Printf( TEXT( "The animation montage must have a multiple of %i sections" ), section_count ) ) );
     }
 }
 
-void FDVEAnimMontageValidationHelpers::CheckMontageSectionNames( TArray< FText > & validation_errors, const UAnimMontage * montage, const TArray< FName > & section_names )
+void FDVEAnimMontageValidationHelpers::CheckMontageSectionNames( FDataValidationContext & context, const UAnimMontage * montage, const TArray< FName > & section_names )
 {
     const auto concatenated_section_names = GetConcatenatedNameArray( section_names );
     const auto section_count = montage->CompositeSections.Num();
@@ -77,12 +77,12 @@ void FDVEAnimMontageValidationHelpers::CheckMontageSectionNames( TArray< FText >
 
     for ( const auto section_name : extra_sections )
     {
-        validation_errors.Emplace( FText::FromString( FString::Printf( TEXT( "Section with name '%s' does not belong to valid sections : %s" ), *section_name.ToString(), *concatenated_section_names ) ) );
+        context.AddError( FText::FromString( FString::Printf( TEXT( "Section with name '%s' does not belong to valid sections : %s" ), *section_name.ToString(), *concatenated_section_names ) ) );
     }
 
     for ( const auto section_name : sections_not_found )
     {
-        validation_errors.Emplace( FText::FromString( FString::Printf( TEXT( "The required section '%s' was not found" ), *section_name.ToString() ) ) );
+        context.AddError( FText::FromString( FString::Printf( TEXT( "The required section '%s' was not found" ), *section_name.ToString() ) ) );
     }
 }
 
