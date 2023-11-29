@@ -1,5 +1,6 @@
 #include "DVEEditorValidatorTexturesBase.h"
 
+#include <Curves/CurveLinearColorAtlas.h>
 #include <Engine/Texture.h>
 
 UDVEEditorValidatorTexturesBase::UDVEEditorValidatorTexturesBase()
@@ -63,7 +64,9 @@ bool UDVEEditorValidatorTexturesBase::CanValidateAsset_Implementation( UObject *
     {
         return false;
     }
-    return in_asset->GetClass()->IsChildOf( UTexture::StaticClass() );
+
+    // :NOTE: Exclude CurveLinearColorAtlas because they inherit from UTexture but their settings don't apply
+    return in_asset->GetClass()->IsChildOf( UTexture::StaticClass() ) && !in_asset->GetClass()->IsChildOf( UCurveLinearColorAtlas::StaticClass() );
 }
 
 EDataValidationResult UDVEEditorValidatorTexturesBase::ValidateLoadedAsset_Implementation( UObject * in_asset, TArray< FText > & validation_errors )
