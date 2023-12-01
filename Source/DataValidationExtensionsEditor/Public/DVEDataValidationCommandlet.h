@@ -11,6 +11,5 @@ class DATAVALIDATIONEXTENSIONSEDITOR_API UDVEDataValidationCommandlet final : pu
     GENERATED_BODY()
 
 public:
-
     int32 Main( const FString & full_command_line ) override;
 };

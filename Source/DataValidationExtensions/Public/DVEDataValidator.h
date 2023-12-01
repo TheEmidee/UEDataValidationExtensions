@@ -221,6 +221,30 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
         return *this;
     }
 
+    FDVEDataValidator & NotEmpty( const FName property_name, const FString & string )
+    {
+        if ( string.IsEmpty() )
+        {
+            Context.AddError(
+                FText::FromString(
+                    FString::Printf( TEXT( "%s must not be empty" ),
+                        *property_name.ToString() ) ) );
+        }
+        return *this;
+    }
+
+    FDVEDataValidator & NotEmpty( const FName property_name, const FText & text )
+    {
+        if ( text.IsEmpty() )
+        {
+            Context.AddError(
+                FText::FromString(
+                    FString::Printf( TEXT( "%s must not be empty" ),
+                        *property_name.ToString() ) ) );
+        }
+        return *this;
+    }
+
     template < typename _CONTAINER_TYPE_ >
     FDVEDataValidator & NoEmptyItem( const FName property_name, const _CONTAINER_TYPE_ & container )
     {
