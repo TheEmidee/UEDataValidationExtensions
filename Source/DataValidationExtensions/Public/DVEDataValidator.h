@@ -349,7 +349,7 @@ struct DATAVALIDATIONEXTENSIONS_API FDVEDataValidator
     }
 
     template < typename _TYPE_ >
-    FDVEDataValidator & CustomValidation( _TYPE_ value, TFunctionRef< void( FDataValidationContext &, _TYPE_ ) > custom_validator )
+    FDVEDataValidator & CustomValidation( const _TYPE_ & value, TFunctionRef< void( FDataValidationContext &, const _TYPE_ & ) > custom_validator )
     {
         custom_validator( Context, value );
         return *this;
