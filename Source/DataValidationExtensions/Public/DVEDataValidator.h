@@ -409,7 +409,7 @@ private:
         return FString::SanitizeFloat( value, 2 );
     }
 
-    template < typename _VALUE_TYPE_, typename TEnableIf< TIsIntegral< _VALUE_TYPE_ >::Value && TIsSame< bool, _VALUE_TYPE_ >::Value, int >::Type = 0 >
+    template < typename _VALUE_TYPE_, typename TEnableIf< TIsIntegral< _VALUE_TYPE_ >::Value && std::is_same< bool, _VALUE_TYPE_ >::Value, int >::Type = 0 >
     static FString GetValueToString( _VALUE_TYPE_ value )
     {
         return value ? TEXT( "true" ) : TEXT( "false" );
