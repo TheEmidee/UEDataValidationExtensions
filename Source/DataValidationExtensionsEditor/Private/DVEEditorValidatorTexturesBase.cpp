@@ -1,7 +1,7 @@
 #include "DVEEditorValidatorTexturesBase.h"
 
-#include <Curves/CurveLinearColorAtlas.h>
-#include <Engine/Texture.h>
+#include "Curves/CurveLinearColorAtlas.h"
+#include "Engine/Texture.h"
 
 UDVEEditorValidatorTexturesBase::UDVEEditorValidatorTexturesBase()
 {

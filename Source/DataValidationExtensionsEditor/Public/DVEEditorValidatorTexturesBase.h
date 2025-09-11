@@ -2,8 +2,8 @@
 
 #include "DVEEditorValidatorBase.h"
 
-#include <CoreMinimal.h>
-#include <Engine/Texture.h>
+#include "CoreMinimal.h"
+#include "Engine/Texture.h"
 
 #include "DVEEditorValidatorTexturesBase.generated.h"
 

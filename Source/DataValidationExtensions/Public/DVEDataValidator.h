@@ -1,9 +1,9 @@
 #pragma once
 
-#include <CoreMinimal.h>
-#include <Misc/DataValidation.h>
-#include <Templates/SubclassOf.h>
-#include <UObject/ObjectPtr.h>
+#include "CoreMinimal.h"
+#include "Misc/DataValidation.h"
+#include "Templates/SubclassOf.h"
+#include "UObject/ObjectPtr.h"
 
 #if WITH_EDITOR
 

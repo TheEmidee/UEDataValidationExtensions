@@ -1,8 +1,8 @@
 #pragma once
 
-#include <CoreMinimal.h>
-#include <EditorValidatorBase.h>
-#include <Engine/EngineTypes.h>
+#include "CoreMinimal.h"
+#include "EditorValidatorBase.h"
+#include "Engine/EngineTypes.h"
 
 #include "DVEEditorValidatorBase.generated.h"
 
