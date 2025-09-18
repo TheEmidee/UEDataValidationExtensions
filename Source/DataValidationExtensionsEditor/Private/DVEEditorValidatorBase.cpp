@@ -35,7 +35,7 @@ EDataValidationResult UDVEEditorValidatorBase::GetResult( UObject * in_asset, TA
     }
     else
     {
-        AssetFails( in_asset, FText::GetEmpty(), validation_errors );
+        AssetFails( in_asset, FText::GetEmpty() );
     }
 
     return validation_errors.Num() > 0 ? EDataValidationResult::Invalid : EDataValidationResult::Valid;
